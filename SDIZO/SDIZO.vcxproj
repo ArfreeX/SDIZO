@@ -147,10 +147,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CDynamicArray.h" />
+    <ClInclude Include="CFileStream.h" />
+    <ClInclude Include="CHeap.h" />
+    <ClInclude Include="CInterface.h" />
+    <ClInclude Include="CLinkedList.h" />
+    <ClInclude Include="CMeasure.h" />
+    <ClInclude Include="CNumberGen.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CDynamicArray.cpp" />
+    <ClCompile Include="CFileStream.cpp" />
+    <ClCompile Include="CHeap.cpp" />
+    <ClCompile Include="CInterface.cpp" />
+    <ClCompile Include="CLinkedList.cpp" />
+    <ClCompile Include="CMeasure.cpp" />
+    <ClCompile Include="CNumberGen.cpp" />
     <ClCompile Include="SDIZO.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
