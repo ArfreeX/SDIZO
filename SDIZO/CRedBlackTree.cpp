@@ -68,80 +68,49 @@ int CRedBlackTree::searchTree(int value, Node* &temp)
 	else return -1;
 }
 
-void CRedBlackTree::checkRBT(Node* &ptr)
+void CRedBlackTree::checkRBT(Node* &temp)
 {
-	/*bool koniec = false;
-	if (getColour(temp->parent) == Colour::Black)
-		return;
-	else
+	/*Node* uncle = nullptr;
+	Node* tParent = nullptr;
+	while (true)
 	{
-		Node* gParent, *uncle;
-		do {
-
-			uncle = getUncle(temp);
-			gParent = temp->parent->parent;
-			if (temp->parent == temp->parent->parent->childLeft)
+		uncle = getUncle(temp);
+		tParent = temp->parent;
+		if (getColour(uncle) == Colour::Red)
+		{
+			setColour(uncle, Colour::Black);
+			setColour(tParent, Colour::Black);
+			setColour(tParent->parent, Colour::Red);
+			setColour(root, Colour::Black);
+			temp = tParent->parent;
+			continue;
+		}
+		else
+		{
+			if (temp == tParent->childRight)
 			{
-
-				if (getColour(uncle) == Colour::Red)
-				{
-					setColour(temp->parent, Colour::Black);
-					setColour(uncle, Colour::Black);
-					if (gParent != root)
-					{
-						koniec = true;
-						setColour(gParent, Colour::Red);
-					}
-					else
-						temp = gParent;
-				}
-
-				if (getColour(uncle) == Colour::Black && temp->parent->childRight == temp && !koniec)
-				{
-					temp = temp->parent;
-					rotateLeft(temp->parent);
-				}
-
-				setColour(gParent, Colour::Red);
-				setColour(temp->parent, Colour::Black);
-				rotateRight(gParent);
-				koniec = true;
+				rotateLeft(tParent);
+				temp = tParent;
+				rotateRight(temp->parent);
+				std::swap(temp->parent->colour, temp->colour);
+				break;
 			}
 			else
 			{
-				if (getColour(uncle) == Colour::Red)
-				{
-					setColour(temp->parent, Colour::Black);
-					setColour(uncle, Colour::Black);
-					if (gParent != root)
-					{
-						koniec = true;
-						setColour(gParent, Colour::Red);
-					}
-					else
-						temp = gParent;
-				}
-
-				if (getColour(uncle) == Colour::Black && temp->parent->childLeft == temp && !koniec)
-				{
-					rotateRight(temp->parent);
-					temp = temp->parent;
-				}
-
-
-				setColour(gParent, Colour::Red);
-				setColour(temp->parent, Colour::Black);
-				rotateLeft(gParent);
-				koniec = true;
+				rotateRight(tParent);
+				temp = tParent;
+				rotateLeft(temp->parent);
+				std::swap(temp->parent->colour, temp->colour);
+				break;
 			}
-		} while (gParent != root && !koniec);
-		setColour(root, Colour::Black);
+		}
 	}*/
+
 	Node *parent = nullptr;
 	Node *grandparent = nullptr;
-	while (ptr != root && getColour(ptr) == Colour::Red && getColour(ptr->parent) == Colour::Red) 
+	while (temp != root && getColour(temp) == Colour::Red && getColour(temp->parent) == Colour::Red) 
 	{
-		parent = ptr->parent;
+		parent = temp->parent;
 		grandparent = parent->parent;
 		if (parent == grandparent->childLeft) {
 			Node *uncle = grandparent->childRight;
@@ -149,17 +118,17 @@ void CRedBlackTree::checkRBT(Node* &ptr)
 				setColour(uncle, Colour::Black);
 				setColour(parent, Colour::Black);
 				setColour(grandparent, Colour::Red);
-				ptr = grandparent;
+				temp = grandparent;
 			}
 			else {
-				if (ptr == parent->childRight) {
+				if (temp == parent->childRight) {
 					rotateLeft(parent);
-					ptr = parent;
-					parent = ptr->parent;
+					temp = parent;
+					parent = temp->parent;
 				}
 				rotateRight(grandparent);
 				std::swap(parent->colour, grandparent->colour);
-				ptr = parent;
+				temp = parent;
 			}
 		}
 		else {
@@ -168,17 +137,17 @@ void CRedBlackTree::checkRBT(Node* &ptr)
 				setColour(uncle, Colour::Black);
 				setColour(parent, Colour::Black);
 				setColour(grandparent, Colour::Red);
-				ptr = grandparent;
+				temp = grandparent;
 			}
 			else {
-				if (ptr == parent->childLeft) {
+				if (temp == parent->childLeft) {
 					rotateRight(parent);
-					ptr = parent;
-					parent = ptr->parent;
+					temp = parent;
+					parent = temp->parent;
 				}
 				rotateLeft(grandparent);
 				std::swap(parent->colour, grandparent->colour);
-				ptr = parent;
+				temp = parent;
 			}
 		}
 	}
