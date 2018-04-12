@@ -7,8 +7,9 @@ public:
 	CRedBlackTree();
 	~CRedBlackTree();
 	void add(int value);
+	int search(int value);
 	void printTree();
-
+	
 private:
 
 	enum class Colour 
@@ -39,6 +40,7 @@ private:
 	void checkRBT(Node* &temp);
 	void rotateLeft(Node * &temp);
 	void rotateRight(Node * &temp);
+	int searchTree(int value, Node* &temp);
 
 	Node* getUncle(Node* &temp);
 	void setColour(Node * &temp, Colour colour);

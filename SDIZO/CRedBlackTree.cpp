@@ -49,7 +49,24 @@ void CRedBlackTree::add(int value)
 
 }
 
+int CRedBlackTree::search(int value)
+{
+	if (root != nullptr)
+		searchTree(value, root);
+	else
+		return -1;
+}
 
+int CRedBlackTree::searchTree(int value, Node* &temp)
+{
+	if (temp->value == value)
+		return value;
+	else if (temp->value > value && temp->childLeft != nullptr)
+		searchTree(value, temp->childLeft);
+	else if (temp->value < value && temp->childRight != nullptr)
+		searchTree(value, temp->childRight);
+	else return -1;
+}
 
 void CRedBlackTree::checkRBT(Node* &ptr)
 {
