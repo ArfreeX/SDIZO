@@ -1,14 +1,20 @@
 #include "stdafx.h"
 
 
+//============= public methods =============
 
 CHeap::CHeap() : CDynamicArray()
+{
+	arraySize = 0;
+}
+
+CHeap::~CHeap()
 {
 }
 
 void CHeap::add(int value)
 {
-	checkSize();
+	checkSize();		// CDynamicArray:: ; check if array == nullptr && if size == capacity, resize table;
 	int index = counter++;
 	array[index] = value;
 
@@ -22,12 +28,28 @@ void CHeap::add(int value)
 	}
 }
 
-int CHeap::search(int value)
+int CHeap::search(int value, int index)
 {
-	return searchValue(value);
+	int temp = 0;
+	if (value == array[index])
+		return index;
+	if (2 * index + 1 < counter && value <= array[2 * index + 1])
+	{
+		temp = search(value, 2 * index + 1);
+		if (temp != -1)
+			return temp;
+	}
+	if (2 * index + 2 < counter && value <= array[2 * index + 2])
+	{
+		temp = search(value, 2 * index + 2);
+		if (temp != -1)
+			return temp;
+	}
+	else
+		return -1;	
 }
 
-int CHeap::push()
+int CHeap::push()		// returns max value and remove it from the array
 {
 	int value = array[0];
 	int index = --counter;
@@ -37,12 +59,7 @@ int CHeap::push()
 	return value;
 }
 
-void CHeap::printHeap()
-{
-	printHeap("", "", 0);
-}
-
-void CHeap::buildHeap()
+void CHeap::buildHeap()		
 {
 	for (int i = 0; i < counter; i++)
 		heapify(i);
@@ -57,6 +74,12 @@ void CHeap::heapSort()
 		array[i] = push();
 		heapify(i);
 	}
+	counter = arraySize;
+}
+
+void CHeap::printHeap()
+{
+	printHeap("", "", 0);
 }
 
 void CHeap::showSorted()
@@ -64,6 +87,9 @@ void CHeap::showSorted()
 	for (int i = 0; i < arraySize; i++)
 		std::cout<< array[i] << " ";
 }
+
+//============= private methods =============
+
 void CHeap::heapify(int index)
 {
 	int indxLeft, indxRight, indxParent;
@@ -86,7 +112,7 @@ void CHeap::heapify(int index)
 	}
 }
 
-void CHeap::printHeap(std::string sp, std::string sn, int v)
+void CHeap::printHeap(std::string sp, std::string sn, int v) // source: http://eduinf.waw.pl/inf/alg/001_search/0113.php
 {
 	std::string s, cr, cl, cp;
 	cr = cl = cp = "  ";
@@ -107,8 +133,4 @@ void CHeap::printHeap(std::string sp, std::string sn, int v)
 		if (sn == cl) s[s.length() - 2] = ' ';
 		printHeap(s + cp, cl, 2 * v + 1);
 	}
-}
-
-CHeap::~CHeap()
-{
 }

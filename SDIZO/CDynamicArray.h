@@ -6,10 +6,11 @@ class CDynamicArray
 public:
 
 	CDynamicArray();
-	virtual ~CDynamicArray();
+	~CDynamicArray();
 
 	int searchOnIndex(int position);
 	int searchValue(int value);
+
 	void addStart(int value);
 	void addEnd(int value);
 	void addOnIndex(int value, int position);

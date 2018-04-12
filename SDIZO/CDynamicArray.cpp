@@ -13,7 +13,6 @@ CDynamicArray::CDynamicArray()
 CDynamicArray::~CDynamicArray()
 {
 	delete[] array;
-	std::cout << "gownoTablica";
 }
 
 

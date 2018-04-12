@@ -42,6 +42,9 @@
     <ClInclude Include="CInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CRedBlackTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CRedBlackTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

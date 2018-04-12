@@ -9,9 +9,21 @@ CLinkedList::CLinkedList()
 	size = 0;
 }
 
+CLinkedList::~CLinkedList()
+{
+	Node* temp = head;
+	while (temp->next != nullptr)
+	{
+		head = temp;
+		temp = temp->next;
+		delete head;
+	}
+	delete temp;
+}
+
 void CLinkedList::addOnStart(int value)
 {
-	if (!checkEmpty(value))
+	if (!isEmpty(value))
 	{
 		Node* temp = head;
 		head = new Node(value);
@@ -63,7 +75,7 @@ void CLinkedList::addOnIndex(int value, int position)
 void CLinkedList::addOnEnd(int value)
 {
 
-	if (!checkEmpty(value))
+	if (!isEmpty(value))
 	{
 		Node* temp = tail;
 		tail = new Node(value);
@@ -205,7 +217,7 @@ void CLinkedList::printReverse()
 		std::cout << "List is empty";
 }
 
-bool CLinkedList::checkEmpty(int value)
+bool CLinkedList::isEmpty(int value)
 {
 	if (head == nullptr || tail == nullptr)
 	{

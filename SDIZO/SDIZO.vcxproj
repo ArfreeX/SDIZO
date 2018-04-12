@@ -154,6 +154,7 @@
     <ClInclude Include="CLinkedList.h" />
     <ClInclude Include="CMeasure.h" />
     <ClInclude Include="CNumberGen.h" />
+    <ClInclude Include="CRedBlackTree.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -165,6 +166,7 @@
     <ClCompile Include="CLinkedList.cpp" />
     <ClCompile Include="CMeasure.cpp" />
     <ClCompile Include="CNumberGen.cpp" />
+    <ClCompile Include="CRedBlackTree.cpp" />
     <ClCompile Include="SDIZO.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

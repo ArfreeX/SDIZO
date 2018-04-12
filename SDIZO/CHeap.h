@@ -7,20 +7,24 @@ class CHeap :
 {
 public:
 	CHeap();
+	~CHeap();
+
 	void add(int value);
-	int search(int value);
+	int search(int value, int index = 0);
 	int push();
-	void printHeap();
+
+	
 	void buildHeap();
 	void heapSort();
+	void printHeap();
 	void showSorted();
-	~CHeap();
+	
 
 private:
 
 	void heapify(int index);
 	void printHeap(std::string sp, std::string sn, int v);
-	int arraySize = 0;
+	int arraySize;
 
 
 	

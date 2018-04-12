@@ -1,7 +1,7 @@
 #pragma once
 #include <random>
 
-class CNumberGen
+class CNumberGen // inspiration && source http://antoni.sterna.staff.iiar.pwr.wroc.pl/sdizo/SDiZO_random.pdf
 {
 public:
 	CNumberGen(int maxRand);

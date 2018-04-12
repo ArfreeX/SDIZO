@@ -5,6 +5,7 @@ class CLinkedList
 {
 public:
 	CLinkedList();
+	~CLinkedList();
 
 	void addOnStart(int value);
 	void addOnIndex(int value, int position);
@@ -40,6 +41,6 @@ public:
 		Node* head, *tail;
 		int size;
 
-		bool checkEmpty(int value);
+		bool isEmpty(int value);
 };
 

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "CFileStream.h"
 
 
 CFileStream::CFileStream()
