@@ -19,15 +19,15 @@ public:
 	void removeOnIndex(int position);
 	void removeStart();
 
-	void showArray();
+	void printArray();
 
 protected:
-
-	int *array, capacity, counter;
 
 	void shift(int position);
 	void shiftDown(int position);
 
-	void checkSize();
-	void resize();
+	void adaptSize(int shiftedIndex = -1);
+	void resize(int shiftedIndex = -1);
+
+	int *array, capacity, counter;
 };

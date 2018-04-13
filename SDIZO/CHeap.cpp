@@ -14,7 +14,7 @@ CHeap::~CHeap()
 
 void CHeap::add(int value)
 {
-	checkSize();		// CDynamicArray:: ; check if array == nullptr && if size == capacity, resize table;
+	adaptSize();		// CDynamicArray:: ; check if array == nullptr && if size == capacity, resize table;
 	int index = counter++;
 	array[index] = value;
 
@@ -26,6 +26,11 @@ void CHeap::add(int value)
 
 		index = (index - 1) / 2;
 	}
+}
+
+void CHeap::addOnArray(int value)
+{
+	addEnd(value);
 }
 
 int CHeap::search(int value, int index)
@@ -49,7 +54,7 @@ int CHeap::search(int value, int index)
 		return -1;	
 }
 
-int CHeap::push()		// returns max value and remove it from the array
+int CHeap::pop()		// returns max value and remove it from the array
 {
 	int value = array[0];
 	int index = --counter;
@@ -71,7 +76,7 @@ void CHeap::heapSort()
 	buildHeap();
 	for (int i = counter - 1; i > 0; i--)
 	{
-		array[i] = push();
+		array[i] = pop();
 		heapify(i);
 	}
 	counter = arraySize;

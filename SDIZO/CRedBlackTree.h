@@ -36,18 +36,18 @@ private:
 	};
 
 	Node *root;
+	void checkRBT(Node* temp);
+	void rotateLeft(Node * temp);
+	void rotateRight(Node * temp);
+	int searchTree(int value, Node* temp);
 
-	void checkRBT(Node* &temp);
-	void rotateLeft(Node * &temp);
-	void rotateRight(Node * &temp);
-	int searchTree(int value, Node* &temp);
-
-	Node* getUncle(Node* &temp);
-	void setColour(Node * &temp, Colour colour);
-	Colour getColour(Node * &temp);
+	Node* getUncle(Node* temp);
+	void setColour(Node * temp, Colour colour);
+	void switchColour(Node* temp);
+	Colour getColour(Node * temp);
 	
 	void printTree(std::string sp, std::string sn, Node* p); // source: http://eduinf.waw.pl/inf/alg/001_search/0113.php
-	std::string showColour(Node * &temp);
+	std::string showColour(Node * temp);
 
 };
 

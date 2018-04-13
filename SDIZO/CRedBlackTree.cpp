@@ -2,7 +2,7 @@
 #include "CRedBlackTree.h"
 
 
-CRedBlackTree::CRedBlackTree()
+CRedBlackTree::CRedBlackTree() 
 {
 	root = nullptr;
 }
@@ -22,6 +22,8 @@ void CRedBlackTree::add(int value)
 		root = new Node(value);
 		setColour(root, Colour::Black);
 		root->parent = nullptr;
+		root->childLeft = nullptr;
+		root->childRight = nullptr;
 		//root->parent = root;
 		return;
 	}
@@ -39,6 +41,8 @@ void CRedBlackTree::add(int value)
 		}
 
 		temp = new Node(value);
+		temp->childLeft = nullptr;
+		temp->childRight = nullptr;
 		if (value < buff->value)
 			buff->childLeft = temp;
 		else
@@ -57,7 +61,7 @@ int CRedBlackTree::search(int value)
 		return -1;
 }
 
-int CRedBlackTree::searchTree(int value, Node* &temp)
+int CRedBlackTree::searchTree(int value, Node* temp)
 {
 	if (temp->value == value)
 		return value;
@@ -68,52 +72,76 @@ int CRedBlackTree::searchTree(int value, Node* &temp)
 	else return -1;
 }
 
-void CRedBlackTree::checkRBT(Node* &temp)
+void CRedBlackTree::checkRBT(Node* temp)
 {
-	/*Node* uncle = nullptr;
+	Node* uncle = nullptr;
 	Node* tParent = nullptr;
-	while (true)
+	Node* gParent = nullptr;
+
+	while (temp != root && getColour(temp) == Colour::Red && getColour(temp->parent) == Colour::Red)
 	{
 		uncle = getUncle(temp);
 		tParent = temp->parent;
-		if (getColour(uncle) == Colour::Red)
+		gParent = tParent->parent;
+		if (tParent == gParent->childLeft)
 		{
-			setColour(uncle, Colour::Black);
-			setColour(tParent, Colour::Black);
-			setColour(tParent->parent, Colour::Red);
-			setColour(root, Colour::Black);
-			temp = tParent->parent;
-			continue;
-		}
-		else
-		{
-			if (temp == tParent->childRight)
+			if (getColour(uncle) == Colour::Red)
 			{
-				rotateLeft(tParent);
-				temp = tParent;
-				rotateRight(temp->parent);
-				std::swap(temp->parent->colour, temp->colour);
-				break;
+				setColour(uncle, Colour::Black);
+				setColour(tParent, Colour::Black);
+				setColour(gParent, Colour::Red);
+				setColour(root, Colour::Black);
+				temp = gParent;
 			}
 			else
 			{
-				rotateRight(tParent);
+				if (temp == tParent->childRight)
+				{
+					rotateLeft(tParent);
+					temp = tParent;
+					tParent = temp->parent;
+				}
+				rotateRight(gParent);
+				switchColour(tParent);
+				switchColour(gParent);
 				temp = tParent;
-				rotateLeft(temp->parent);
-				std::swap(temp->parent->colour, temp->colour);
-				break;
 			}
 		}
-	}*/
+		else
+		{
+			if (getColour(uncle) == Colour::Red)
+			{
+				setColour(uncle, Colour::Black);
+				setColour(tParent, Colour::Black);
+				setColour(gParent, Colour::Red);
+				setColour(root, Colour::Black);
+				temp = gParent;
+			}
+			else
+			{
+				if (temp == tParent->childLeft)
+				{
+					rotateRight(tParent);
+					temp = tParent;
+					tParent = temp->parent;
+				}
+				rotateLeft(gParent);
+				switchColour(tParent);
+				switchColour(gParent);
+				temp = tParent;
+			}
+		}
+	}
 
-	Node *parent = nullptr;
-	Node *grandparent = nullptr;
-	while (temp != root && getColour(temp) == Colour::Red && getColour(temp->parent) == Colour::Red) 
+
+	/*Node *tParent = nullptr;
+	Node *gParent = nullptr;
+	while (temp != root && getColour(temp) == Colour::Red && getColour(temp->parent) == Colour::Red)
 	{
 		parent = temp->parent;
 		grandparent = parent->parent;
 		if (parent == grandparent->childLeft) {
-			Node *uncle = grandparent->childRight;
+			Node *uncle = getUncle(temp);
 			if (getColour(uncle) == Colour::Red) {
 				setColour(uncle, Colour::Black);
 				setColour(parent, Colour::Black);
@@ -151,13 +179,13 @@ void CRedBlackTree::checkRBT(Node* &temp)
 			}
 		}
 	}
-	setColour(root, Colour::Black);
+	setColour(root, Colour::Black);*/
 
 }
 
 
 
-void CRedBlackTree::rotateLeft(Node * &temp)
+void CRedBlackTree::rotateLeft(Node * temp)
 {
 	Node* rChild = temp->childRight;
 	if (rChild != nullptr)
@@ -179,11 +207,29 @@ void CRedBlackTree::rotateLeft(Node * &temp)
 		else
 			root = rChild;
 	}
+
+	/*Node *right_child = ptr->childRight;
+	ptr->childRight = right_child->childLeft;
+
+	if (ptr->childRight != nullptr)
+		ptr->childRight->parent = ptr;
+
+	right_child->parent = ptr->parent;
+
+	if (ptr->parent == nullptr)
+		root = right_child;
+	else if (ptr == ptr->parent->childRight)
+		ptr->parent->childLeft = right_child;
+	else
+		ptr->parent->childRight = right_child;
+
+	right_child->childLeft = ptr;
+	ptr->parent = right_child;*/
 }
 
 
 
-void CRedBlackTree::rotateRight(Node * &temp)
+void CRedBlackTree::rotateRight(Node * temp)
 {
 	Node* lChild = temp->childLeft;
 	if (lChild != nullptr)
@@ -205,45 +251,69 @@ void CRedBlackTree::rotateRight(Node * &temp)
 		else
 			root = lChild;
 	}
+
+	//Node *left_child = ptr->childLeft;
+	//ptr->childLeft = left_child->childRight;
+
+	//if (ptr->childLeft != nullptr)
+	//	ptr->childLeft->parent = ptr;
+
+	//left_child->parent = ptr->parent;
+
+	//if (ptr->parent == nullptr)
+	//	root = left_child;
+	//else if (ptr == ptr->parent->childLeft)
+	//	ptr->parent->childLeft = left_child;
+	//else
+	//	ptr->parent->childRight = left_child;
+
+	//left_child->childRight = ptr;
+	//ptr->parent = left_child;
 }
 
 
 
-std::string CRedBlackTree::showColour(Node * &temp)
+std::string CRedBlackTree::showColour(Node * temp)
 {
 	if (temp->colour == Colour::Black)
 		return "B: ";
 	else
 		return "R: ";
 }
-	
 
 
-CRedBlackTree::Node* CRedBlackTree::getUncle(Node* &temp)
+
+CRedBlackTree::Node* CRedBlackTree::getUncle(Node* temp)
 {
-	if (temp->parent->childLeft == temp->parent)
-		return temp->parent->childRight;
+	if (temp->parent->parent->childLeft == temp->parent)
+		return temp->parent->parent->childRight;
 	else
-		return temp->parent->childLeft;
+		return temp->parent->parent->childLeft;
 }
 
 
 
-void CRedBlackTree::setColour(Node * &temp, Colour colour)
+void CRedBlackTree::setColour(Node * temp, Colour colour)
 {
 	temp->colour = colour;
 }
 
 
 
-CRedBlackTree::Colour CRedBlackTree::getColour(Node * &temp)
+CRedBlackTree::Colour CRedBlackTree::getColour(Node * temp)
 {
 	if (temp == nullptr)
 		return Colour::Black;
 	return temp->colour;
 }
 
-
+void CRedBlackTree::switchColour(Node* temp)
+{
+	if (getColour(temp) == Colour::Red)
+		setColour(temp, Colour::Black);
+	else
+		setColour(temp, Colour::Red);
+}
 
 void CRedBlackTree::printTree()
 {

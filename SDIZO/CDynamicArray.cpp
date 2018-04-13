@@ -37,22 +37,20 @@ int CDynamicArray::searchValue(int value)
 
 void CDynamicArray::addStart(int value)
 {
-	checkSize();
-	shift(0);
+	adaptSize(0);
 	array[0] = value;
 	counter++;
 }
 
 void CDynamicArray::addEnd(int value)
 {
-	checkSize();
+	adaptSize();
 	array[counter] = value;
 	counter++;
 }
 
 void CDynamicArray::addOnIndex(int value, int position)
 {
-	checkSize();
 	if (position == 0)
 		addStart(value);
 	else if (position == counter)
@@ -61,8 +59,9 @@ void CDynamicArray::addOnIndex(int value, int position)
 		std::cout << "Invalid index";
 	else
 	{
-		shift(position);
+		adaptSize(position);
 		array[position] = value;
+		counter++;
 	}
 }
 
@@ -82,21 +81,27 @@ void CDynamicArray::removeStart()
 	shiftDown(0);
 }
 
-void CDynamicArray::showArray()
+void CDynamicArray::printArray()
 {
 	for (int i = 0; i < counter; i++)
 	{
 		std::cout << array[i] << std::endl;
 	}
-	std::cout << "Size is: " << capacity << std::endl;
+	std::cout << "Size (capacity): " << capacity << std::endl;
+	std::cout << "Number of elements: " << counter << std::endl;
 }
 
 void CDynamicArray::shift(int position)
 {
-	for (int i = counter; i > position; i--)
+	if (counter == capacity)
 	{
-		array[i] = array[i - 1];
+
 	}
+	else
+		for (int i = counter; i > position; i--)
+		{
+			array[i] = array[i - 1];
+		}
 }
 
 void CDynamicArray::shiftDown(int position)
@@ -108,23 +113,40 @@ void CDynamicArray::shiftDown(int position)
 	counter--;
 }
 
-void CDynamicArray::checkSize()
+void CDynamicArray::adaptSize(int shiftedIndex)
 {
 	if (array == nullptr)
 	{
 		array = new int[++capacity];
+		return;
 	}
-	else if (counter == capacity)
-		resize();
+	if (counter == capacity)
+	{
+		if (shiftedIndex != -1)
+			resize(shiftedIndex);
+		else
+			resize();
+	}
+	else if (counter < capacity && shiftedIndex != -1)
+		shift(shiftedIndex);
 }
 
-void CDynamicArray::resize()
+void CDynamicArray::resize(int shiftedIndex)
 {
 	int *temp_array = new int[++capacity];
 
-	for (int i = 0; i < capacity-1; i++)
-		temp_array[i] = array[i];
-
+	if (shiftedIndex != -1)
+	{
+		for (int i = 0; i < shiftedIndex; i++)
+			temp_array[i] = array[i];
+		for (int i = shiftedIndex + 1; i < capacity; i++)
+			temp_array[i] = array[i-1];
+	}
+	else
+	{
+		for (int i = 0; i < capacity - 1; i++)
+			temp_array[i] = array[i];
+	}
 	delete[] array;
 	array = temp_array;
 }

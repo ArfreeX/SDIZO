@@ -1,8 +1,9 @@
 #include "stdafx.h"
 
-
-CFileStream::CFileStream()
+CFileStream::~CFileStream()
 {
+	fileRead.close();
+	fileWrite.close();
 }
 
 void CFileStream::openFile()
@@ -19,10 +20,9 @@ void CFileStream::openFile()
 	} while (fileRead.good() != true && filename != "exit");
 }
 
-void CFileStream::readData()
+int* CFileStream::readData(int* array,int & size)
 {
 	int val;
-
 	if (fileRead.is_open())
 	{
 		fileRead >> size;
@@ -42,13 +42,15 @@ void CFileStream::readData()
 				array[i] = val;
 		}
 		fileRead.close();
+		return array;
 	}
 	else
 		std::cout << "File error - OPEN" << std::endl;
+	return nullptr;
 
 }
 
-void CFileStream::write()
+void CFileStream::write(int* array, int size)
 {
 	std::cin >> filename;
 	fileWrite.open(filename, std::ios::out | std::ios::app);
@@ -58,17 +60,5 @@ void CFileStream::write()
 	}
 }
 
-void CFileStream::showArray()
-{
-	for (int i = 0; i < size; i++)
-	{
-		std::cout << array[i] << std::endl;
-	}
-}
 
-CFileStream::~CFileStream()
-{
-	delete[] array;
-	fileRead.close();
-	fileWrite.close();
-}
+

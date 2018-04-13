@@ -6,7 +6,7 @@ void CMeasure::start()
 	beginning = Clock::now();
 }
 
-void CMeasure::elapsed()
+long long int CMeasure::elapsed()
 {
-	std::cout << std::chrono::duration_cast<TIME>(Clock::now() - beginning).count() << "ns\n";
+	return std::chrono::duration_cast<TIME>(Clock::now() - beginning).count();
 }

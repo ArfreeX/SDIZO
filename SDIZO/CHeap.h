@@ -10,8 +10,9 @@ public:
 	~CHeap();
 
 	void add(int value);
+	void addOnArray(int value);
 	int search(int value, int index = 0);
-	int push();
+	int pop();
 
 	
 	void buildHeap();

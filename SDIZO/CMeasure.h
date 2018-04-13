@@ -9,10 +9,10 @@ public:
 	typedef std::chrono::high_resolution_clock Clock;
 	typedef std::chrono::nanoseconds TIME;
 
-	void start();
-	void elapsed();
+	 void start();
+	 long long int elapsed();
 
 private:
-	Clock::time_point beginning;
+	 Clock::time_point beginning;
 };
 
