@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CAVLTree.h" />
     <ClInclude Include="CDynamicArray.h" />
     <ClInclude Include="CFileStream.h" />
     <ClInclude Include="CHeap.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAVLTree.cpp" />
     <ClCompile Include="CDynamicArray.cpp" />
     <ClCompile Include="CFileStream.cpp" />
     <ClCompile Include="CHeap.cpp" />

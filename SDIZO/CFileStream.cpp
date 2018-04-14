@@ -50,14 +50,15 @@ int* CFileStream::readData(int* array,int & size)
 
 }
 
-void CFileStream::write(int* array, int size)
+void CFileStream::write(int* array, int size) 
 {
-	std::cin >> filename;
+	std::cin >> filename;  // preferable "title.csv" since it will be easier to manipulate with data;
 	fileWrite.open(filename, std::ios::out | std::ios::app);
 	for (int i = 0; i < size; i++)
 	{
 		fileWrite << array[i] << std::endl;
 	}
+	fileWrite.close();
 }
 
 

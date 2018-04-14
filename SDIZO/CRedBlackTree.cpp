@@ -1,19 +1,27 @@
 #include "stdafx.h"
-#include "CRedBlackTree.h"
 
 
-CRedBlackTree::CRedBlackTree() 
+
+CRedBlackTree::CRedBlackTree() : sentinel(0)
 {
 	root = nullptr;
+	sentinel.colour = Colour::Black;
 }
 
 
 CRedBlackTree::~CRedBlackTree()
 {
-	delete root;
+	deleteTree(root);
 }
 
-
+void CRedBlackTree::deleteTree(Node* temp)
+{
+	if (temp->childLeft != &sentinel)
+		deleteTree(temp->childLeft);
+	if (temp->childRight != &sentinel)
+		deleteTree(temp->childRight);
+	delete temp;
+}
 
 void CRedBlackTree::add(int value)
 {
@@ -22,16 +30,15 @@ void CRedBlackTree::add(int value)
 		root = new Node(value);
 		setColour(root, Colour::Black);
 		root->parent = nullptr;
-		root->childLeft = nullptr;
-		root->childRight = nullptr;
-		//root->parent = root;
+		root->childLeft = &sentinel;
+		root->childRight = &sentinel;
 		return;
 	}
 	else
 	{
 		Node* temp = root;
 		Node* buff = temp;
-		while (temp != nullptr)
+		while (temp != &sentinel)
 		{
 			buff = temp;
 			if (temp->value > value)
@@ -41,8 +48,8 @@ void CRedBlackTree::add(int value)
 		}
 
 		temp = new Node(value);
-		temp->childLeft = nullptr;
-		temp->childRight = nullptr;
+		temp->childLeft = &sentinel;
+		temp->childRight = &sentinel;
 		if (value < buff->value)
 			buff->childLeft = temp;
 		else
@@ -53,21 +60,126 @@ void CRedBlackTree::add(int value)
 
 }
 
-int CRedBlackTree::search(int value)
+void CRedBlackTree::remove(int value)
+{
+	Node* temp = searchNode(value, root);
+
+	if ( temp != &sentinel)
+	{
+		Node* buff, *son, *brother;
+
+		if (temp->childLeft == &sentinel || temp->childRight == &sentinel)
+			buff = temp;
+		else
+			buff = getSuccessor(temp);
+
+		if (buff->childLeft == &sentinel)
+			son = buff->childRight;
+		else
+			son = buff->childLeft;
+		son->parent = buff->parent;
+
+		if (buff->parent == nullptr)
+		{
+			root = son;
+		}
+		else if (buff == buff->parent->childLeft) // version3. updt
+			buff->parent->childLeft = son;
+		else
+			buff->parent->childRight = son;
+		if (buff != temp)
+			temp->value = buff->value;
+		if (getColour(buff) != Colour::Red)
+		{
+			while (son != root && getColour(son) == Colour::Black)
+			{
+				if (son != son->parent->childRight) 
+				{
+					brother = son->parent->childRight;
+					if (getColour(brother) != Colour::Black)
+					{
+						setColour(brother, Colour::Black);
+						setColour(son->parent, Colour::Red);
+						rotateLeft(son->parent);
+						brother = son->parent->childRight;
+					}
+					if (getColour(brother->childLeft) != Colour::Red && getColour(brother->childRight) != Colour::Red) 
+					{
+						setColour(brother, Colour::Red);
+						son = son->parent;
+					}
+					else
+					{
+						if (getColour(brother->childRight) != Colour::Red) 
+						{
+							setColour(brother->childLeft, Colour::Black);
+							setColour(brother, Colour::Red);
+							rotateRight(brother);
+							brother = son->parent->childRight;
+						}
+
+						setColour(brother, getColour(son->parent)); 
+						setColour(son->parent, Colour::Black);
+						setColour(brother->childRight, Colour::Black);
+						rotateLeft(son->parent);		
+						son = root;
+					}
+				}
+				else
+				{
+					brother = son->parent->childLeft;
+					if (getColour(brother) != Colour::Black)
+					{
+						setColour(brother, Colour::Black);
+						setColour(son->parent, Colour::Red);
+						rotateRight(son->parent);
+						brother = son->parent->childLeft;
+					}
+					if (getColour(brother->childLeft) != Colour::Red && getColour(brother->childRight) != Colour::Red)
+					{
+						setColour(brother, Colour::Red);
+						son = son->parent;
+					}
+					else
+					{
+						if (getColour(brother->childLeft) != Colour::Red)
+						{
+							setColour(brother->childRight, Colour::Black);
+							setColour(brother, Colour::Red);
+							rotateLeft(brother);
+							brother = son->parent->childLeft;
+						}
+
+						setColour(brother, getColour(son->parent)); 
+						setColour(son->parent, Colour::Black);
+						setColour(brother->childLeft, Colour::Black);
+						rotateRight(son->parent);		
+						son = root;
+					}
+				}
+
+			}
+		}
+		setColour(son, Colour::Black);
+		delete buff;
+	}
+}
+
+int CRedBlackTree::search(int value) // mozliwe jest zwracanie wskaznika na wyszukiwanego Node'a, jednak wymaga to upublicznienia struktury;
 {
 	if (root != nullptr)
-		searchTree(value, root);
+		searchTree/*searchNode*/(value, root); 
 	else
 		return -1;
 }
 
-int CRedBlackTree::searchTree(int value, Node* temp)
+int CRedBlackTree::searchTree(int value, Node* temp) 
 {
 	if (temp->value == value)
 		return value;
-	else if (temp->value > value && temp->childLeft != nullptr)
+	else if (temp->value > value && temp->childLeft != &sentinel)
 		searchTree(value, temp->childLeft);
-	else if (temp->value < value && temp->childRight != nullptr)
+	else if (temp->value < value && temp->childRight != &sentinel)
 		searchTree(value, temp->childRight);
 	else return -1;
 }
@@ -132,55 +244,6 @@ void CRedBlackTree::checkRBT(Node* temp)
 			}
 		}
 	}
-
-
-	/*Node *tParent = nullptr;
-	Node *gParent = nullptr;
-	while (temp != root && getColour(temp) == Colour::Red && getColour(temp->parent) == Colour::Red)
-	{
-		parent = temp->parent;
-		grandparent = parent->parent;
-		if (parent == grandparent->childLeft) {
-			Node *uncle = getUncle(temp);
-			if (getColour(uncle) == Colour::Red) {
-				setColour(uncle, Colour::Black);
-				setColour(parent, Colour::Black);
-				setColour(grandparent, Colour::Red);
-				temp = grandparent;
-			}
-			else {
-				if (temp == parent->childRight) {
-					rotateLeft(parent);
-					temp = parent;
-					parent = temp->parent;
-				}
-				rotateRight(grandparent);
-				std::swap(parent->colour, grandparent->colour);
-				temp = parent;
-			}
-		}
-		else {
-			Node *uncle = grandparent->childLeft;
-			if (getColour(uncle) == Colour::Red) {
-				setColour(uncle, Colour::Black);
-				setColour(parent, Colour::Black);
-				setColour(grandparent, Colour::Red);
-				temp = grandparent;
-			}
-			else {
-				if (temp == parent->childLeft) {
-					rotateRight(parent);
-					temp = parent;
-					parent = temp->parent;
-				}
-				rotateLeft(grandparent);
-				std::swap(parent->colour, grandparent->colour);
-				temp = parent;
-			}
-		}
-	}
-	setColour(root, Colour::Black);*/
-
 }
 
 
@@ -207,24 +270,6 @@ void CRedBlackTree::rotateLeft(Node * temp)
 		else
 			root = rChild;
 	}
-
-	/*Node *right_child = ptr->childRight;
-	ptr->childRight = right_child->childLeft;
-
-	if (ptr->childRight != nullptr)
-		ptr->childRight->parent = ptr;
-
-	right_child->parent = ptr->parent;
-
-	if (ptr->parent == nullptr)
-		root = right_child;
-	else if (ptr == ptr->parent->childRight)
-		ptr->parent->childLeft = right_child;
-	else
-		ptr->parent->childRight = right_child;
-
-	right_child->childLeft = ptr;
-	ptr->parent = right_child;*/
 }
 
 
@@ -251,24 +296,6 @@ void CRedBlackTree::rotateRight(Node * temp)
 		else
 			root = lChild;
 	}
-
-	//Node *left_child = ptr->childLeft;
-	//ptr->childLeft = left_child->childRight;
-
-	//if (ptr->childLeft != nullptr)
-	//	ptr->childLeft->parent = ptr;
-
-	//left_child->parent = ptr->parent;
-
-	//if (ptr->parent == nullptr)
-	//	root = left_child;
-	//else if (ptr == ptr->parent->childLeft)
-	//	ptr->parent->childLeft = left_child;
-	//else
-	//	ptr->parent->childRight = left_child;
-
-	//left_child->childRight = ptr;
-	//ptr->parent = left_child;
 }
 
 
@@ -281,7 +308,13 @@ std::string CRedBlackTree::showColour(Node * temp)
 		return "R: ";
 }
 
-
+CRedBlackTree::Node* CRedBlackTree::minNode(Node* temp)
+{
+	Node* buff = temp;
+	while (buff->childLeft != &sentinel && buff->childLeft != nullptr)
+		buff = buff->childLeft;
+	return buff;
+}
 
 CRedBlackTree::Node* CRedBlackTree::getUncle(Node* temp)
 {
@@ -291,6 +324,38 @@ CRedBlackTree::Node* CRedBlackTree::getUncle(Node* temp)
 		return temp->parent->parent->childLeft;
 }
 
+CRedBlackTree::Node* CRedBlackTree::searchNode(int value, Node* temp)
+{
+	if (temp->value == value)
+		return temp;
+	else if (temp->value > value && temp->childLeft != &sentinel)
+		searchNode(value, temp->childLeft);
+	else if (temp->value < value && temp->childRight != &sentinel)
+		searchNode(value, temp->childRight);
+	else return nullptr;
+}
+
+CRedBlackTree::Node* CRedBlackTree::getSuccessor(Node* temp)
+{
+	if (temp != nullptr)
+	{
+		if (temp->childRight != &sentinel)
+			return minNode(temp->childRight);
+		else
+		{
+			Node* buff;
+			buff = temp->parent;
+			while (buff != nullptr && temp == buff->childRight)
+			{
+				temp = buff;
+				buff = temp->parent;
+			}
+			return buff;
+		}
+	}
+	else
+		return nullptr;
+}
 
 
 void CRedBlackTree::setColour(Node * temp, Colour colour)
@@ -302,7 +367,7 @@ void CRedBlackTree::setColour(Node * temp, Colour colour)
 
 CRedBlackTree::Colour CRedBlackTree::getColour(Node * temp)
 {
-	if (temp == nullptr)
+	if (temp == &sentinel)
 		return Colour::Black;
 	return temp->colour;
 }
@@ -330,7 +395,7 @@ void CRedBlackTree::printTree(std::string sp, std::string sn, Node* p) // source
 	cl[0] = 192; cl[1] = 196;
 	cp[0] = 179;
 
-	if (p != nullptr)
+	if (p != &sentinel)
 	{
 		s = sp;
 		if (sn == cr) s[s.length() - 2] = ' ';
@@ -344,3 +409,42 @@ void CRedBlackTree::printTree(std::string sp, std::string sn, Node* p) // source
 		printTree(s + cp, cl, p->childLeft);
 	}
 }
+
+
+/*
+//=======================================//
+//				Remove for BST			 //
+//=======================================//
+
+//std::cout << temp->value;
+if (temp != &sentinel)
+{
+Node* buff;
+Node* son;
+
+if (temp->childLeft == &sentinel || temp->childRight == &sentinel)
+buff = temp;
+else
+buff = getSuccessor(temp);
+if (buff->childLeft == &sentinel)
+son = buff->childRight;
+else
+son = buff->childLeft;
+if (son != &sentinel)
+son->parent = buff->parent;
+if (buff->parent == root)
+{
+root = son;
+}
+else
+{
+if (buff == buff->parent->childLeft)
+buff->parent->childLeft = son;
+else
+buff->parent->childRight = son;
+}
+if (buff != temp)
+temp->value = buff->value;
+delete buff;
+}
+*/

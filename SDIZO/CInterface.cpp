@@ -162,6 +162,11 @@ void CInterface::readData(CFileStream &file)
 	system("Pause");
 }
 
+void CInterface::writeData(CFileStream &file)
+{
+	file.write(array, size);
+}
+
 void CInterface::randomData()
 {
 	CNumberGen gen(MAX_VALUE);
@@ -234,13 +239,15 @@ void CInterface::startMenu()
 		{
 		case 0:	readData(file);
 			break;
-		case 1: randomData();
+		case 1: writeData(file);
 			break;
-		case 2: algorithmMenu();
+		case 2: randomData();
 			break;
-		case 3: printArray();
+		case 3: algorithmMenu();
 			break;
-		case 4:
+		case 4: printArray();
+			break;
+		case 5:
 			program = false;
 			break;
 		default: system("cls");
@@ -290,10 +297,10 @@ int CInterface::menu_gl()
 				{
 				case 72:
 					if (0 < wybor) wybor--;
-					else wybor = 4;
+					else wybor = 5;
 					break;
 				case 80:
-					if (wybor < 4) wybor++;
+					if (wybor < 5) wybor++;
 					else wybor = 0;
 
 					break;
@@ -320,12 +327,14 @@ void CInterface::menu_gl_rysowanie(int x, int h)
 	gotoxy(10 + x, 0 + h);
 	std::cout << "Read data";
 	gotoxy(10 + x, 1 + h);
-	std::cout << "Random data";
+	std::cout << "Save results";
 	gotoxy(10 + x, 2 + h);
-	std::cout << "Algorithms";
+	std::cout << "Random data";
 	gotoxy(10 + x, 3 + h);
-	std::cout << "Print data";
+	std::cout << "Algorithms";
 	gotoxy(10 + x, 4 + h);
+	std::cout << "Print data";
+	gotoxy(10 + x, 5 + h);
 	std::cout << "End";
 }
 
@@ -337,13 +346,15 @@ void CInterface::menu_gl_podswietlenie(int x, int h, int wybor)
 	{
 	case 0:std::cout << "Read data";
 		break;
-	case 1:std::cout << "Random data";
+	case 1:std::cout << "Save results";
 		break;
-	case 2:std::cout << "Algorithms";
+	case 2:std::cout << "Random data";
 		break;
-	case 3:std::cout << "Print data";
+	case 3:std::cout << "Algorithms";
 		break;
-	case 4:std::cout << "End";
+	case 4:std::cout << "Print data";
+		break;
+	case 5:std::cout << "End";
 		break;
 	}
 }

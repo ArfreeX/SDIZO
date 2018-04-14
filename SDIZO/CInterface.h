@@ -15,6 +15,7 @@ private:
 	void gotoxy(int x, int y);
 	void printArray();
 	void readData(CFileStream &file);
+	void writeData(CFileStream &file);
 	void randomData();
 	void startMenu();
 

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CMeasure.h"
+
 
 void CMeasure::start()
 {
