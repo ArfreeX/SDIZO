@@ -13,6 +13,7 @@ public:
 	void addOnArray(int value);
 	int search(int value, int index = 0);
 	int pop();
+	void removeValue(int value);
 
 	
 	void buildHeap();

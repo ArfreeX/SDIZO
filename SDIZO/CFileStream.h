@@ -13,7 +13,7 @@ public:
 	
 
 private:
-	std::ifstream fileRead;
-	std::ofstream fileWrite;
-	std::string filename;
+	std::ifstream fileRead; // odczyt z pliku
+	std::ofstream fileWrite; // wypis do pliku ( wypis wynikow )
+	std::string filename; // pole z nazwa pliku
 };

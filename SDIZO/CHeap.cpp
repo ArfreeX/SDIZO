@@ -10,6 +10,7 @@ CHeap::CHeap() : CDynamicArray()
 
 CHeap::~CHeap()
 {
+	//delete[] array;// array destuctor handles freeing memory;
 }
 
 void CHeap::add(int value)
@@ -62,6 +63,18 @@ int CHeap::pop()		// returns max value and remove it from the array
 	heapify(0);
 
 	return value;
+}
+
+void CHeap::removeValue(int value)		//search value and then remove it from the array
+{
+	int index2 = search(value);
+	if (index2 != -1)
+	{
+		int index = (counter - 1);
+		array[index2] = array[index];
+		resizeDown(index);
+		heapify(index2);
+	}
 }
 
 void CHeap::buildHeap()		

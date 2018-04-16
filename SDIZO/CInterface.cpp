@@ -2,11 +2,23 @@
 
 CInterface::CInterface() 
 {
-	startMenu();
+	startMenu(); 
 }
 CInterface::~CInterface()
 {
 	delete[] array;
+}
+
+int CInterface::probeInt(int input)
+{
+	std::cin >> input;
+	if (!std::cin) {
+		std::cout << "\nBad value!\n";
+		std::cin.clear();
+		std::cin.ignore(100, '\n');
+		std::cin >> input;
+	}
+	return input;
 }
 
 void CInterface::gotoxy(int x, int y)
@@ -17,8 +29,8 @@ void CInterface::gotoxy(int x, int y)
 
 void CInterface::structureMenu()
 {
-	system("cls");
-	std::cout << "Structure menu\n";
+	//system("cls");
+	std::cout << "structure menu\n\n";
 	std::cout << "[1] Fill up with data\n";
 	std::cout << "[2] Print structure\n";
 	std::cout << "[3] Add element\n";
@@ -29,8 +41,8 @@ void CInterface::structureMenu()
 
 void CInterface::structureArrayListMenu()
 {
-	system("cls");
-	std::cout << "Structure menu\n";
+	//system("cls");
+	std::cout << "structure menu\n\n";
 	std::cout << "[1] Fill up with data\n";
 	std::cout << "[2] Print structure\n";
 	std::cout << "[3] Add element: front\n";
@@ -46,45 +58,60 @@ void CInterface::structureArrayListMenu()
 void CInterface::menuArray()
 {
 	CDynamicArray testArray;
-	int input;
+	int input = 0;
+	int value = 0;
+	int index = 0;
+	long long int time = 0; 
 	do {
+		system("cls");
+		std::cout << "Array ";
 		structureArrayListMenu();
-		std::cin >> input;
-		if (!std::cin) {
-			std::cout << "\nBad value!\n";
-			std::cin.clear();
-			std::cin.ignore(100, '\n');
-			std::cin >> input;
-		}
+		input = probeInt(input);
 		switch (input)
 		{
-		case 1: 
+		case 1:  //arrayFill
 			if (size > 0)
 				for (int i = 0; i < size; i++)
 					testArray.addEnd(array[i]);
 			break;
-		case 2: 
-			system("cls");
-			long long int x;
-			testTime.start();
+		case 2: //arrayPrint
+			std::cout << std::endl;
 			testArray.printArray();
-		    x = testTime.elapsed();
-			std::cout << x;
-			system("pause");
+			std::cout << std::endl;
+			system("PAUSE");
 			break;
 		case 3: //arrayAddF();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testArray.addStart(value);
 			break;
 		case 4: //arrayAddI();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			std::cout << "\nInsert index: ";
+			index = probeInt(index);
+			testArray.addOnIndex(value, index);
 			break;
 		case 5: //arrayAddB();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testArray.addEnd(value);
 			break;
 		case 6: //arrayRemoveF();
+			testArray.removeStart();
 			break;
 		case 7: //arrayRemoveI();
+			std::cout << "\nInsert index: ";
+			index = probeInt(index);
+			testArray.removeOnIndex(index);
 			break;
 		case 8: //arrayRemoveB();
+			testArray.removeEnd();
 			break;
 		case 9: //arraySearch();
+			value = probeInt(value);
+			std::cout << "\nIndex: " << testArray.searchValue(value) << std::endl;
+			system("PAUSE");
 			break;
 		}
 	} while (input != 10);
@@ -94,62 +121,200 @@ void CInterface::menuArray()
 
 void CInterface::menuList()
 {
-	int input;
+	CLinkedList testList;
+	int input = 0;
+	int value = 0;
+	int index = 0;
+
 	do {
+		system("cls");
+		std::cout << "List ";
 		structureArrayListMenu();
-		std::cin >> input;
-		if (!std::cin) {
-			std::cout << "\nBad value!\n";
-			std::cin.clear();
-			std::cin.ignore(100, '\n');
-			std::cin >> input;
+		input = probeInt(input);
+		switch (input)
+		{
+		case 1:  //listFill
+			if (size > 0)
+				for (int i = 0; i < size; i++)
+					testList.addOnEnd(array[i]);
+			break;
+		case 2: //listPrint
+			std::cout << std::endl;
+			testList.print();
+			std::cout << std::endl;
+			system("PAUSE");
+			break;
+		case 3: //listAddF();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testList.addOnStart(value);
+			break;
+		case 4: //listAddI();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			std::cout << "\nInsert index: ";
+			index = probeInt(index);
+			testList.addOnIndex(value, index);
+			break;
+		case 5: //listAddB();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testList.addOnEnd(value);
+			break;
+		case 6: //listRemoveF();
+			testList.removeStart();
+			break;
+		case 7: //listRemoveI();
+			std::cout << "\nInsert index: ";
+			index = probeInt(index);
+			testList.removeOnIndex(index);
+			break;
+		case 8: //listRemoveB();
+			testList.removeEnd(); 
+			break;
+		case 9: //listSearch();
+			value = probeInt(value);
+			std::cout << "\nIndex: " << testList.searchValue(value) << std::endl;
+			system("PAUSE");
+			break;
 		}
 	} while (input != 10);
 }
 
 void CInterface::menuHeap()
 {
-	int input;
+	CHeap testHeap;
+	int input = 0;
+	int value = 0;
+	int index = 0;
 	do {
+		system("cls");
+		std::cout << "Heap ";
 		structureMenu();
-		std::cin >> input;
-		if (!std::cin) {
-			std::cout << "\nBad value!\n";
-			std::cin.clear();
-			std::cin.ignore(100, '\n');
-			std::cin >> input;
+		input = probeInt(input);
+		switch (input)
+		{
+		case 1:  //heapFill
+			if (size > 0)
+				for (int i = 0; i < size; i++)
+					testHeap.add(array[i]);
+			break;
+		case 2: //heapPrint
+			std::cout << std::endl;
+			testHeap.printHeap();
+			std::cout << std::endl;
+			system("PAUSE");
+			break;
+		case 3: //heapAdd();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testHeap.add(value);
+			break;
+		case 4: //heapRemove();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testHeap.removeValue(value);
+			break;
+		case 5: //heapSearch();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			std::cout << "Index: " << testHeap.search(value) << std::endl;
+			system("PAUSE");
+			break;
 		}
-	} while (input != 5);
+	} while (input != 6);
 }
 
 void CInterface::menuRBT()
 {
-	int input;
+	CRedBlackTree testRBT;
+	int input = 0;
+	int value = 0;
+	int index = 0;
 	do {
+		system("cls");
+		std::cout << "Heap ";
 		structureMenu();
-		std::cin >> input;
-		if (!std::cin) {
-			std::cout << "\nBad value!\n";
-			std::cin.clear();
-			std::cin.ignore(100, '\n');
-			std::cin >> input;
+		input = probeInt(input);
+		switch (input)
+		{
+		case 1:  //rbtFill
+			if (size > 0)
+				for (int i = 0; i < size; i++)
+					testRBT.add(array[i]);
+			break;
+		case 2: //rbtPrint
+			std::cout << std::endl;
+			testRBT.printTree();
+			std::cout << std::endl;
+			system("PAUSE");
+			break;
+		case 3: //rbtAdd();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testRBT.add(value);
+			break;
+		case 4: //rbtRemove();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testRBT.remove(value);
+			break;
+		case 5: //rbtySearch();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			std::cout << "Due to lack of the key, search opeartion returns\n";
+			std::cout << "searching value when SUCCESS and -1 when FAIL";
+			std::cout << "\nValue: " << testRBT.search(value) << std::endl;
+			system("PAUSE");
+			break;
 		}
-	} while (input != 5);
+	} while (input != 6);
 }
 
 void CInterface::menuAVL()
 {
-	int input;
+	CAVLTree testAVL;
+	int input = 0;
+	int value = 0;
+	int index = 0;
 	do {
+		system("cls");
+		std::cout << "Heap ";
 		structureMenu();
-		std::cin >> input;
-		if (!std::cin) {
-			std::cout << "\nBad value!\n";
-			std::cin.clear();
-			std::cin.ignore(100, '\n');
-			std::cin >> input;
+		input = probeInt(input);
+		switch (input)
+		{
+		case 1:  //avlFill 
+			if (size > 0)
+				for (int i = 0; i < size; i++)
+					testAVL.add(array[i]);
+			break;
+		case 2: //avlPrint
+			std::cout << std::endl;
+			testAVL.printTree();
+			std::cout << std::endl;
+			system("PAUSE");
+			break;
+		case 3: //avlAdd();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testAVL.add(value);
+			break;
+		case 4: //avlRemove();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			testAVL.remove(value);
+			break;
+		case 5: //avlSearch();
+			std::cout << "\nInsert value: ";
+			value = probeInt(value);
+			std::cout << "Due to lack of the key, search opeartion returns\n";
+			std::cout << "searching value when SUCCESS and -1 when FAIL";
+			std::cout << "\nValue: " << testAVL.search(value) << std::endl;
+			system("PAUSE");
+			break;
 		}
-	} while (input != 5);
+	} while (input != 6);
 }
 
 void CInterface::readData(CFileStream &file)
@@ -172,14 +337,8 @@ void CInterface::randomData()
 	CNumberGen gen(MAX_VALUE);
 	system("cls");
 	std::cout << "Insert size of data [ -1 for random size ]\n";
-	int input;
-	std::cin >> input;
-	if (!std::cin) {
-		std::cout << "\nBad value!\n";
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		std::cin >> input;
-	}
+	int input = 0;
+	input = probeInt(input);
 	if (input >= 0)
 	{
 		size = input;
@@ -283,7 +442,7 @@ int CInterface::menu_gl()
 		std::cout << "//      MAIN MENU      //";
 		gotoxy(10 + x, 0 + (h - 2));
 		std::cout << "//=====================//";
-		system("COLOR 1B");
+		system("COLOR 1B"); 
 		menu_gl_rysowanie(x, h);
 		//23 && 31
 		while (wykonujPetle)

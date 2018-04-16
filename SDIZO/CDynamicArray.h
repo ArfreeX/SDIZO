@@ -25,7 +25,7 @@ protected:
 
 	void shift(int position);
 	void shiftDown(int position);
-
+	void resizeDown(int position);
 	void adaptSize(int shiftedIndex = -1);
 	void resize(int shiftedIndex = -1);
 

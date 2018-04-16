@@ -16,16 +16,19 @@ CRedBlackTree::~CRedBlackTree()
 
 void CRedBlackTree::deleteTree(Node* temp)
 {
-	if (temp->childLeft != &sentinel)
-		deleteTree(temp->childLeft);
-	if (temp->childRight != &sentinel)
-		deleteTree(temp->childRight);
-	delete temp;
+	if (temp != &sentinel && temp != nullptr)
+	{
+		if (temp->childLeft != &sentinel)
+			deleteTree(temp->childLeft);
+		if (temp->childRight != &sentinel)
+			deleteTree(temp->childRight);
+		delete temp;
+	}
 }
 
 void CRedBlackTree::add(int value)
 {
-	if (root == nullptr)
+	if (root == nullptr || root == &sentinel)
 	{
 		root = new Node(value);
 		setColour(root, Colour::Black);
@@ -57,14 +60,14 @@ void CRedBlackTree::add(int value)
 		temp->parent = buff;
 		checkRBT(temp);
 	}
-
 }
 
 void CRedBlackTree::remove(int value)
 {
-	Node* temp = searchNode(value, root);
+	Node* temp = nullptr;
+	temp = searchNode(value, root);
 
-	if ( temp != &sentinel)
+	if ( temp != &sentinel && temp != nullptr)
 	{
 		Node* buff, *son, *brother;
 
@@ -162,13 +165,14 @@ void CRedBlackTree::remove(int value)
 		}
 		setColour(son, Colour::Black);
 		delete buff;
+		buff = nullptr;
 	}
 }
 
 int CRedBlackTree::search(int value) // mozliwe jest zwracanie wskaznika na wyszukiwanego Node'a, jednak wymaga to upublicznienia struktury;
 {
 	if (root != nullptr)
-		searchTree/*searchNode*/(value, root); 
+		return searchTree/*searchNode*/(value, root); 
 	else
 		return -1;
 }
@@ -178,9 +182,9 @@ int CRedBlackTree::searchTree(int value, Node* temp)
 	if (temp->value == value)
 		return value;
 	else if (temp->value > value && temp->childLeft != &sentinel)
-		searchTree(value, temp->childLeft);
+		return searchTree(value, temp->childLeft);
 	else if (temp->value < value && temp->childRight != &sentinel)
-		searchTree(value, temp->childRight);
+		return searchTree(value, temp->childRight);
 	else return -1;
 }
 
@@ -189,7 +193,6 @@ void CRedBlackTree::checkRBT(Node* temp)
 	Node* uncle = nullptr;
 	Node* tParent = nullptr;
 	Node* gParent = nullptr;
-
 	while (temp != root && getColour(temp) == Colour::Red && getColour(temp->parent) == Colour::Red)
 	{
 		uncle = getUncle(temp);
@@ -251,16 +254,17 @@ void CRedBlackTree::checkRBT(Node* temp)
 void CRedBlackTree::rotateLeft(Node * temp)
 {
 	Node* rChild = temp->childRight;
-	if (rChild != nullptr)
+	Node* tParent;
+	if (rChild != &sentinel)
 	{
-		Node* tParent = temp->parent;
+		tParent = temp->parent;
 		temp->childRight = rChild->childLeft;
-		if (temp->childRight != nullptr)
+		if (temp->childRight != &sentinel) // zmiana z nullptr
 			temp->childRight->parent = temp;
 		rChild->childLeft = temp;
 		rChild->parent = tParent;
 		temp->parent = rChild;
-		if (tParent != nullptr)
+		if (tParent != &sentinel  && tParent != nullptr)
 		{
 			if (temp == tParent->childLeft)
 				tParent->childLeft = rChild;
@@ -273,23 +277,24 @@ void CRedBlackTree::rotateLeft(Node * temp)
 }
 
 
-
 void CRedBlackTree::rotateRight(Node * temp)
 {
 	Node* lChild = temp->childLeft;
-	if (lChild != nullptr)
+	Node* tParent;
+
+	if (lChild != &sentinel)
 	{
-		Node* tParent = temp->parent;
+		tParent = temp->parent;
 		temp->childLeft = lChild->childRight;
-		if (temp->childLeft != nullptr)
+		if (temp->childLeft != &sentinel)
 			temp->childLeft->parent = temp;
 		lChild->childRight = temp;
-		lChild->parent = temp->parent;
+		lChild->parent = tParent;
 		temp->parent = lChild;
-		if (tParent != nullptr)
+		if (tParent != &sentinel  && tParent != nullptr)
 		{
-			if (temp == temp->parent->childLeft)
-				temp->parent->childLeft = lChild;
+			if (temp == tParent->childLeft)
+				tParent->childLeft = lChild;
 			else
 				tParent->childRight = lChild;
 		}
@@ -326,12 +331,18 @@ CRedBlackTree::Node* CRedBlackTree::getUncle(Node* temp)
 
 CRedBlackTree::Node* CRedBlackTree::searchNode(int value, Node* temp)
 {
-	if (temp->value == value)
-		return temp;
-	else if (temp->value > value && temp->childLeft != &sentinel)
-		searchNode(value, temp->childLeft);
-	else if (temp->value < value && temp->childRight != &sentinel)
-		searchNode(value, temp->childRight);
+	if (temp != nullptr)
+	{
+
+		if (temp->value == value)
+			return temp;
+		else if (temp->value > value && temp->childLeft != &sentinel)
+			return searchNode(value, temp->childLeft);
+		else if (temp->value < value && temp->childRight != &sentinel)
+			return searchNode(value, temp->childRight);
+		else
+			return nullptr;
+	}
 	else return nullptr;
 }
 
@@ -388,14 +399,14 @@ void CRedBlackTree::printTree()
 
 
 void CRedBlackTree::printTree(std::string sp, std::string sn, Node* p) // source: http://eduinf.waw.pl/inf/alg/001_search/0113.php
-{
+{																	   //stackoverflow for too many arguments ( 100 000);
 	std::string s, cr, cl, cp;
 	cr = cl = cp = "  ";
 	cr[0] = 218; cr[1] = 196;
 	cl[0] = 192; cl[1] = 196;
 	cp[0] = 179;
 
-	if (p != &sentinel)
+	if (p != &sentinel && p!= nullptr)
 	{
 		s = sp;
 		if (sn == cr) s[s.length() - 2] = ' ';

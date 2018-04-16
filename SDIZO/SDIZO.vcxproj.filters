@@ -48,6 +48,9 @@
     <ClInclude Include="CAVLTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CTimeTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CAVLTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimeTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

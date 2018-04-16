@@ -11,8 +11,9 @@ public:
 	CInterface();
 	~CInterface();
 	
-private:
+protected:
 	void gotoxy(int x, int y);
+	int probeInt(int input);
 	void printArray();
 	void readData(CFileStream &file);
 	void writeData(CFileStream &file);
@@ -40,6 +41,6 @@ private:
 	long long int arrayTime[10] = { 0 };
 	int size;
 	const int TEST_SIZE = 1000; // size of structures during time measure 
-	const int MAX_VALUE = 100000000; // highest possible value to random draw;
+	const int MAX_VALUE = 1000; // highest possible value to random draw;
 	CMeasure testTime;
 };

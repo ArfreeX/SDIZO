@@ -15,11 +15,14 @@ CAVLTree::~CAVLTree()
 
 void CAVLTree::deleteTree(Node* temp)
 {
-	if (temp->childLeft != nullptr)
-		deleteTree(temp->childLeft);
-	if (temp->childRight != nullptr)
-		deleteTree(temp->childRight);
-	delete temp;
+	if (temp != nullptr)
+	{
+		if (temp->childLeft != nullptr)
+			deleteTree(temp->childLeft);
+		if (temp->childRight != nullptr)
+			deleteTree(temp->childRight);
+		delete temp;
+	};
 }
 
 void CAVLTree::add(int value)
@@ -50,26 +53,26 @@ void CAVLTree::add(int value)
 		else
 			buff->childRight = temp;
 		temp->parent = buff;
-		balanceTree(temp);	
+		balanceTree(temp);
 	}
 
 }
 
-void CAVLTree::balanceTree(Node* temp) 
+void CAVLTree::balanceTree(Node* temp)
 {
 	Node* par, *gpar; // parent & grandparent
 	bool stop = false;
 	par = temp->parent;
-	if (par->bf != 0) 
+	if (par->bf != 0)
 		par->bf = 0;
 	else
 	{
-		if (par->childLeft == temp) 
+		if (par->childLeft == temp)
 			par->bf = 1;
 		else
 			par->bf = -1;
 		gpar = par->parent;
-		while (gpar != nullptr && !stop)  
+		while (gpar != nullptr && !stop)
 		{
 			if (gpar->bf)
 			{
@@ -84,50 +87,52 @@ void CAVLTree::balanceTree(Node* temp)
 						gpar->bf = -1;
 				}
 				par = gpar;
-				gpar = gpar->parent;  
+				gpar = gpar->parent;
 			}
 		}
 		if (stop)
-		if (gpar->bf != -1) 
-		{
-			if (gpar->childRight != par)
+			if (gpar->bf != -1)
 			{
-				if (par->bf == -1)
-					rotateRight(gpar);//lr
+				if (gpar->childRight != par)
+				{
+					if (par->bf == -1)
+						rotateDoubleLeft(gpar);//lr
+					else
+						rotateLeft(gpar);//ll
+				}
 				else
-					rotateLeft(gpar);//ll
+				{
+					gpar->bf = 0;
+				}
 			}
 			else
 			{
-				gpar->bf = 0;
-			}
-		}
-		else
-		{
-			if (gpar->childLeft == par)
-				gpar->bf = 0;
-			else
-			{
-				if (par->bf == 1)
-					rotateDoubleRight(gpar);//rl
+				if (gpar->childLeft == par)
+					gpar->bf = 0;
 				else
-					rotateRight(gpar);//rr
+				{
+					if (par->bf == 1)
+						rotateDoubleRight(gpar);//rl
+					else
+						rotateRight(gpar);//rr
+				}
 			}
-		}
 	}
 }
 void CAVLTree::remove(int value)
 {
-	Node* temp = searchNode(value, root);
+	Node* temp = nullptr;
+	temp = searchNode(value, root);
 	if (temp != nullptr)
+	{
 		removeNode(temp);
-	
+	}
 }
 
 void CAVLTree::removeNode(Node* temp)
 {
 	Node* buff, *par, *xbuff; // wskazniki pomocnicze
-	bool test;
+	bool test = false;
 	if (temp->childLeft != nullptr && temp->childRight != nullptr)
 	{
 		par = getSuccessor(temp);
@@ -147,7 +152,7 @@ void CAVLTree::removeNode(Node* temp)
 			temp->childRight = nullptr;
 		}
 		temp->bf = 0;
-		test = true; 
+		test = true;
 	}
 	if (par != nullptr)
 	{
@@ -155,7 +160,7 @@ void CAVLTree::removeNode(Node* temp)
 		par->childLeft = temp->childLeft;
 		if (par->childLeft != nullptr)
 			par->childLeft->parent = par;
-		par->childRight = temp->childRight; 
+		par->childRight = temp->childRight;
 		if (par->childRight != nullptr)
 			par->childRight->parent = par;
 		par->bf = temp->bf;
@@ -165,7 +170,7 @@ void CAVLTree::removeNode(Node* temp)
 		if (temp->parent->childLeft == temp)
 			temp->parent->childLeft = par;
 		else
-			temp->parent->childRight = par; 
+			temp->parent->childRight = par;
 	}
 	else
 		root = par;
@@ -177,11 +182,10 @@ void CAVLTree::removeNode(Node* temp)
 		{
 			if (par->bf == 0)
 			{
-				if (par->childLeft == xbuff) 
-				{
+				if (par->childLeft == xbuff)
 					par->bf = -1;
-					test = false;
-				}
+				test = false;
+	
 			}
 			else
 			{
@@ -191,15 +195,15 @@ void CAVLTree::removeNode(Node* temp)
 					xbuff = par;
 					par = par->parent;
 				}
-				else 
+				else
 				{
 					if (par->childLeft == xbuff)
 						buff = par->childRight;
 					else
 						buff = par->childLeft;
-					if (buff->bf != 0) 
+					if (buff->bf != 0)
 					{
-						if (par->bf == 1) 
+						if (par->bf == 1)
 							rotateLeft(par);
 						else
 							rotateRight(par);
@@ -223,108 +227,175 @@ void CAVLTree::removeNode(Node* temp)
 						xbuff = par->parent;
 						par = xbuff->parent;
 					}
-						
+
 				}
 
 			}
 		}
 	}
-	
+
 }
 int CAVLTree::search(int value) // mozliwe jest zwracanie wskaznika na wyszukiwanego Node'a, jednak wymaga to upublicznienia struktury;
 {
 	if (root != nullptr)
-		searchTree(value, root); // searchNode
+		return searchTree/*searchNode*/(value, root);
 	else
 		return -1;
 }
 
-int CAVLTree::searchTree(int value, Node* temp) 
+int CAVLTree::searchTree(int value, Node* temp)
 {
 	if (temp->value == value)
 		return value;
 	else if (temp->value > value && temp->childLeft != nullptr)
-		searchTree(value, temp->childLeft);
+		return searchTree(value, temp->childLeft);
 	else if (temp->value < value && temp->childRight != nullptr)
-		searchTree(value, temp->childRight);
+		return searchTree(value, temp->childRight);
 	else return -1;
 }
 
-void CAVLTree::rotateLeft(Node * temp)
+void CAVLTree::rotateLeft(Node* temp)
 {
-	Node* par, *buff;
+	if (temp != nullptr) {
+		Node* par, *buff;
+		buff = temp->childLeft;
+		par = temp->parent;
+		temp->childLeft = buff->childRight; // buff->nullptr [ child cos tam ]
+		if (temp->childLeft != nullptr)
+			temp->childLeft->parent = temp;
+		buff->childRight = temp;
+		buff->parent = par;
+		temp->parent = buff;
+		if (par != nullptr)
+		{
+			if (par->childLeft == temp)
+				par->childLeft = buff;
+			else
+				par->childRight = buff;
+		}
+		else
+			root = buff;
+		if (buff->bf == 1)
+		{
+			temp->bf = 0;
+			buff->bf = 0;
+		}
+		else
+		{
+			temp->bf = 1;
+			buff->bf = -1;
+		}
+	}
+}
+
+void CAVLTree::rotateRight(Node* temp)
+{
+	if (temp != nullptr)
+	{
+		Node* par, *buff;
+		buff = temp->childRight;
+		par = temp->parent;
+		temp->childRight = buff->childLeft; // buff->nullptr [ child cos tam ]
+		if (temp->childRight != nullptr)
+			temp->childRight->parent = temp;
+		buff->childLeft = temp;
+		buff->parent = par;
+		temp->parent = buff;
+		if (par != nullptr)
+		{
+			if (par->childLeft == temp)
+				par->childLeft = buff;
+			else
+				par->childRight = buff;
+		}
+		else
+			root = buff;
+		if (buff->bf == -1)
+		{
+			temp->bf = 0;
+			buff->bf = 0;
+		}
+		else
+		{
+			temp->bf = -1;
+			buff->bf = 1;
+		}
+	}
+}
+
+void CAVLTree::rotateDoubleLeft(Node* temp)
+{
+	Node* buff, *xbuff, *par;
 	buff = temp->childLeft;
+	xbuff = buff->childRight;
 	par = temp->parent;
-	temp->childLeft = buff->childRight;
+	buff->childRight = xbuff->childLeft;
+	if (buff->childRight != nullptr)
+		buff->childRight->parent = buff;
+	temp->childLeft = xbuff->childRight;
 	if (temp->childLeft != nullptr)
 		temp->childLeft->parent = temp;
-	buff->childRight = temp;
-	buff->parent = par;
-	temp->parent = buff;
-	if (par != nullptr)
+	xbuff->childRight = temp;
+	xbuff->childLeft = buff;
+	temp->parent = xbuff;
+	buff->parent = xbuff;
+	xbuff->parent = par;
+	if (par != nullptr) // 13
 	{
 		if (par->childLeft == temp)
-			par->childLeft = buff;
+			par->childLeft = xbuff;
 		else
-			par->childRight = buff;
+			par->childRight = xbuff;
 	}
 	else
-		root = buff;
-	if (buff->bf == 1)
-	{
+		root = xbuff;
+	if (xbuff->bf == 1)
+		temp->bf = -1;
+	else
 		temp->bf = 0;
-		buff->bf = 0;
-	}
+	if (xbuff->bf == -1)
+		buff->bf = 1;
 	else
-	{
-		temp->bf = 1;
-		buff->bf = -1;
-	}
+		buff->bf = 0;
+	xbuff->bf = 0;
 }
 
-void CAVLTree::rotateRight(Node * temp)
+
+void CAVLTree::rotateDoubleRight(Node* temp)
 {
-	Node* par, *buff;
+	Node* buff, *xbuff, *par;
 	buff = temp->childRight;
+	xbuff = buff->childLeft;
 	par = temp->parent;
-	temp->childRight = buff->childLeft;
+	buff->childLeft = xbuff->childRight;
+	if (buff->childLeft != nullptr)
+		buff->childLeft->parent = buff;
+	temp->childRight = xbuff->childLeft;
 	if (temp->childRight != nullptr)
 		temp->childRight->parent = temp;
-	buff->childLeft = temp;
-	buff->parent = par;
-	temp->parent = buff;
-	if (par != nullptr)
+	xbuff->childLeft = temp;
+	xbuff->childRight = buff;
+	temp->parent = xbuff;
+	buff->parent = xbuff;
+	xbuff->parent = par;
+	if (par != nullptr) // 13
 	{
 		if (par->childLeft == temp)
-			par->childLeft = buff;
+			par->childLeft = xbuff;
 		else
-			par->childRight = buff;
+			par->childRight = xbuff;
 	}
 	else
-		root = buff;
-	if (buff->bf == -1)
-	{
+		root = xbuff;
+	if (xbuff->bf == -1)
+		temp->bf = 1;
+	else
 		temp->bf = 0;
-		buff->bf = 0;
-	}
+	if (xbuff->bf == 1)
+		buff->bf = -1;
 	else
-	{
-		temp->bf = -1;
-		buff->bf = 1;
-	}
-}
-
-void CAVLTree::rotateDoubleLeft(Node * temp)
-{
-	rotateRight(temp->childRight);
-	rotateLeft(temp);
-}
-
-
-void CAVLTree::rotateDoubleRight(Node * temp)
-{
-	rotateLeft(temp->childLeft);
-	rotateRight(temp);
+		buff->bf = 0;
+	xbuff->bf = 0;
 }
 
 CAVLTree::Node* CAVLTree::minNode(Node* temp)
@@ -345,13 +416,19 @@ CAVLTree::Node* CAVLTree::getUncle(Node* temp)
 
 CAVLTree::Node* CAVLTree::searchNode(int value, Node* temp)
 {
-	if (temp->value == value)
-		return temp;
-	else if (temp->value > value && temp->childLeft != nullptr)
-		searchNode(value, temp->childLeft);
-	else if (temp->value < value && temp->childRight != nullptr)
-		searchNode(value, temp->childRight);
-	else return nullptr;
+	if (temp != nullptr)
+	{
+		if (temp != nullptr && temp->value == value)
+			return temp;
+		else if (temp->value > value && temp->childLeft != nullptr)
+			return searchNode(value, temp->childLeft);
+		else if (temp->value < value && temp->childRight != nullptr)
+			return searchNode(value, temp->childRight);
+		else 
+			return nullptr;
+	}
+	else
+		return nullptr;
 }
 
 CAVLTree::Node* CAVLTree::getSuccessor(Node* temp)
@@ -408,7 +485,7 @@ void CAVLTree::printTree(std::string sp, std::string sn, Node* p) // source: htt
 		printTree(s + cp, cr, p->childRight);
 
 		s = s.substr(0, sp.length() - 2);
-		std::cout << s << sn  << "( " << p->value << ", H:" << height(p) << " )" << std::endl;
+		std::cout << s << sn << "( V:" << p->value << ", H:" << height(p) << " )" << std::endl;
 
 		s = sp;
 		if (sn == cl) s[s.length() - 2] = ' ';

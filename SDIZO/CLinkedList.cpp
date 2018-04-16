@@ -12,13 +12,13 @@ CLinkedList::CLinkedList()
 CLinkedList::~CLinkedList()
 {
 	Node* temp = head;
-	while (temp->next != nullptr)
-	{
-		head = temp;
-		temp = temp->next;
-		delete head;
-	}
-	delete temp;
+	if (temp != nullptr && tail!=nullptr)
+		while (temp->next != nullptr)
+		{
+			head = temp;
+			temp = temp->next;
+			delete head;
+		}
 }
 
 void CLinkedList::addOnStart(int value)
@@ -121,11 +121,17 @@ int CLinkedList::searchValue(int value)
 }
 void CLinkedList::removeStart()
 {
-	Node *temp = head->next;
-	delete head;
-	head = temp;
-	head->previous = nullptr;
-	size--;
+	if (head != nullptr)
+	{
+		Node *temp = head->next;
+		delete head;
+		head = temp;
+		if (head != nullptr)
+		{
+			head->previous = nullptr;
+		}
+		size--;
+	}
 }
 
 void CLinkedList::removeOnIndex(int position)
@@ -172,11 +178,14 @@ void CLinkedList::removeOnIndex(int position)
 }
 void CLinkedList::removeEnd()
 {
-	Node *temp = tail->previous;
-	delete tail;
-	tail = temp;
-	tail->next = nullptr;
-	size--;
+	if (tail != nullptr) {
+		Node *temp = tail->previous;
+		delete tail;
+		tail = temp;
+		if (tail != nullptr)
+			tail->next = nullptr;
+		size--;
+	}
 }
 
 void CLinkedList::print()

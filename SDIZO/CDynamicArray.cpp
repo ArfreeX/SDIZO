@@ -57,35 +57,37 @@ void CDynamicArray::addOnIndex(int value, int position)
 		addEnd(value);
 	else if (position > counter)
 		std::cout << "Invalid index";
-	else
+	else if (position > 0)
 	{
 		adaptSize(position);
 		array[position] = value;
 		counter++;
 	}
+	else
+		std::cout << "Invalid index";
 }
 
 void CDynamicArray::removeEnd()
 {
-	counter--;
+	resizeDown(counter-1);
 }
 
 void CDynamicArray::removeOnIndex(int position)
 {
-	if (position < counter)
-		shiftDown(position);
+	if (position < counter && position >= 0)
+		resizeDown(position);
 }
 
 void CDynamicArray::removeStart()
 {
-	shiftDown(0);
+	resizeDown(0);
 }
 
 void CDynamicArray::printArray()
 {
 	for (int i = 0; i < counter; i++)
 	{
-		std::cout << array[i] << std::endl;
+		std::cout <<i<<". "<< array[i] << std::endl;
 	}
 	std::cout << "Size (capacity): " << capacity << std::endl;
 	std::cout << "Number of elements: " << counter << std::endl;
@@ -111,6 +113,24 @@ void CDynamicArray::shiftDown(int position)
 		array[i] = array[i + 1];
 	}
 	counter--;
+}
+
+void CDynamicArray::resizeDown(int position)
+{
+	if (counter > 0)
+	{
+		int* temp = new int[--capacity];
+		counter--;
+		if (position != -1 && position >= 0)
+		{
+			for (int i = counter-1; i >= position; i--)
+				temp[i] = array[i+1];
+			for (int i = position - 1; i >= 0; i--)
+				temp[i] = array[i];
+			delete[] array;
+			array = temp;
+		}
+	}
 }
 
 void CDynamicArray::adaptSize(int shiftedIndex)
