@@ -63,18 +63,18 @@ void CAVLTree::balanceTree(Node* temp)
 	Node* par, *gpar; // parent & grandparent
 	bool stop = false;
 	par = temp->parent;
-	if (par->bf != 0)
+	if (par->bf != 0) // rodzic byl "dopuszczalnie" niezbalansowany -> teraz jest zbalansowany - konczymy
 		par->bf = 0;
 	else
 	{
-		if (par->childLeft == temp)
+		if (par->childLeft == temp) // dodajemy wezel w miejsce lewego dziecka 
 			par->bf = 1;
 		else
 			par->bf = -1;
-		gpar = par->parent;
-		while (gpar != nullptr && !stop)
+		gpar = par->parent; // przypisujemy dziadka
+		while (gpar != nullptr && !stop) // wykonujemy dopoki dziadek istnieje  ( operacje w petli identyczne jak dla rodzica wyzej )
 		{
-			if (gpar->bf)
+			if (gpar->bf) // szukamy wezla ktory jest niezbalansowany
 			{
 				stop = true;
 			}
@@ -90,7 +90,7 @@ void CAVLTree::balanceTree(Node* temp)
 				gpar = gpar->parent;
 			}
 		}
-		if (stop)
+		if (stop) // jezeli znaleziono niezbalansowany wezel to wykonujemy jego naprawe
 			if (gpar->bf != -1)
 			{
 				if (gpar->childRight != par)
@@ -105,7 +105,7 @@ void CAVLTree::balanceTree(Node* temp)
 					gpar->bf = 0;
 				}
 			}
-			else
+			else // przypadki lustrzane
 			{
 				if (gpar->childLeft == par)
 					gpar->bf = 0;

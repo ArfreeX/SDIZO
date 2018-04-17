@@ -10,15 +10,14 @@ public:
 	~CHeap();
 
 	void add(int value);
-	void addOnArray(int value);
 	int search(int value, int index = 0);
 	int pop();
 	void removeValue(int value);
-
+	void printHeap();
 	
 	void buildHeap();
 	void heapSort();
-	void printHeap();
+	void addOnArray(int value);
 	void showSorted();
 	
 

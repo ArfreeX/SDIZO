@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 
-//============= public methods =============
+
 
 CHeap::CHeap() : CDynamicArray()
 {
@@ -15,17 +15,17 @@ CHeap::~CHeap()
 
 void CHeap::add(int value)
 {
-	adaptSize();		// CDynamicArray:: ; check if array == nullptr && if size == capacity, resize table;
+	adaptSize();		// CDynamicArray:: ; check: if array == nullptr && if size == capacity, resize table;
 	int index = counter++;
 	array[index] = value;
 
-	while (index > 0 && array[index] > array[(index - 1) / 2])
+	while (index > 0 && array[index] > array[(index - 1) / 2]) // sprawdzenie czy dziecko jest wieksze od rodzica
 	{
 		int temp = array[(index - 1) / 2];
 		array[(index - 1) / 2] = array[index];
-		array[index] = temp;
+		array[index] = temp;		// zamiana dziecka z rodzicem miejscami
 
-		index = (index - 1) / 2;
+		index = (index - 1) / 2; // za indeks przyjmujemy indeks rodzica
 	}
 }
 
@@ -51,8 +51,7 @@ int CHeap::search(int value, int index)
 		if (temp != -1)
 			return temp;
 	}
-	else
-		return -1;	
+	return -1;	
 }
 
 int CHeap::pop()		// returns max value and remove it from the array
@@ -115,18 +114,18 @@ void CHeap::heapify(int index)
 	indxLeft = index * 2 + 1;
 	indxRight = index * 2 + 2;
 
-	if (indxLeft < counter && array[index] < array[indxLeft])
+	if (indxLeft < counter && array[index] < array[indxLeft]) // porownanie z lewym dzieckiem
 		indxParent = indxLeft;
 	else
 		indxParent = index;
 
-	if (indxRight < counter && array[indxParent] < array[indxRight])
+	if (indxRight < counter && array[indxParent] < array[indxRight]) // porownanie z 'parentem'
 		indxParent = indxRight;
 
-	if (indxParent != index)
+	if (indxParent != index) // jezeli jakiekolwiek dziecko > od rodzica wtedy swappujemy
 	{
 		std::swap(array[index], array[indxParent]);
-		heapify(indxParent);
+		heapify(indxParent); // rekurencyjne wywolanie po swappie dla dziecka, sprawdzamy warunek kopca poziom nizej
 	}
 }
 

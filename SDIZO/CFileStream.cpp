@@ -29,20 +29,28 @@ int* CFileStream::readData(int* array,int & size)
 		if (fileRead.fail())
 			std::cout << "File error - READ SIZE" << std::endl;
 		else
-			array = new int[size];
-		for (int i = 0; i < size; i++)
-		{
-			fileRead >> val;
-			if (fileRead.fail())
+			if (size > 0)
 			{
-				std::cout << "File error - READ DATA" << std::endl;
-				break;
+				array = new int[size];
+				for (int i = 0; i < size; i++)
+				{
+					fileRead >> val;
+					if (fileRead.fail())
+					{
+						std::cout << "File error - READ DATA" << std::endl;
+						break;
+					}
+					else
+						array[i] = val;
+				}
+				fileRead.close();
+				return array;
 			}
 			else
-				array[i] = val;
-		}
-		fileRead.close();
-		return array;
+			{
+				size = 0;
+				fileRead.close();
+			}
 	}
 	else
 		std::cout << "File error - OPEN" << std::endl;

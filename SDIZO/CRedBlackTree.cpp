@@ -14,7 +14,7 @@ CRedBlackTree::~CRedBlackTree()
 	deleteTree(root);
 }
 
-void CRedBlackTree::deleteTree(Node* temp)
+void CRedBlackTree::deleteTree(Node* temp) // rekurencyjne niszczenie drzewa
 {
 	if (temp != &sentinel && temp != nullptr)
 	{
@@ -28,7 +28,7 @@ void CRedBlackTree::deleteTree(Node* temp)
 
 void CRedBlackTree::add(int value)
 {
-	if (root == nullptr || root == &sentinel)
+	if (root == nullptr || root == &sentinel) // gdy drzewo jest puste dodajemy element 'na' roota i konczymy
 	{
 		root = new Node(value);
 		setColour(root, Colour::Black);
@@ -41,17 +41,17 @@ void CRedBlackTree::add(int value)
 	{
 		Node* temp = root;
 		Node* buff = temp;
-		while (temp != &sentinel)
+		while (temp != &sentinel) // dopoki nie dojdziemy do wezla straznika powtarzamy poszukiwanie miejsca na nowy wezel
 		{
 			buff = temp;
-			if (temp->value > value)
+			if (temp->value > value) // sprawdzenie warunku dodawania do drzewa bst
 				temp = temp->childLeft;
 			else
 				temp = temp->childRight;
 		}
 
-		temp = new Node(value);
-		temp->childLeft = &sentinel;
+		temp = new Node(value); // dodajemy nowy wezel w miejsce straznika
+		temp->childLeft = &sentinel; // przepinamy straznika jako dzieci
 		temp->childRight = &sentinel;
 		if (value < buff->value)
 			buff->childLeft = temp;
@@ -65,70 +65,70 @@ void CRedBlackTree::add(int value)
 void CRedBlackTree::remove(int value)
 {
 	Node* temp = nullptr;
-	temp = searchNode(value, root);
+	temp = searchNode(value, root); // wyszukujemy adres wezla ktory mamy usunac [ rekurencyjnie ]
 
-	if ( temp != &sentinel && temp != nullptr)
+	if ( temp != &sentinel && temp != nullptr) // jezeli wezel istnieje przechodzimy dalej
 	{
 		Node* buff, *son, *brother;
 
-		if (temp->childLeft == &sentinel || temp->childRight == &sentinel)
+		if (temp->childLeft == &sentinel || temp->childRight == &sentinel) // sytuacja gdy wezel ma tylko 0 lub 1 dziecko przypadki 1 & 2
 			buff = temp;
 		else
-			buff = getSuccessor(temp);
+			buff = getSuccessor(temp);		// gdy wezel posiada dwojke dzieci pobieramy nastepce przypadki 3 & 4
 
-		if (buff->childLeft == &sentinel)
+		if (buff->childLeft == &sentinel) 
 			son = buff->childRight;
 		else
 			son = buff->childLeft;
-		son->parent = buff->parent;
+		son->parent = buff->parent; // przypisujemy synowi nowego ojca
 
 		if (buff->parent == nullptr)
 		{
 			root = son;
 		}
 		else if (buff == buff->parent->childLeft) // version3. updt
-			buff->parent->childLeft = son;
+			buff->parent->childLeft = son; // przypisujemy ojcu syna, uzupelniamy polaczenie
 		else
-			buff->parent->childRight = son;
+			buff->parent->childRight = son; // -||-
 		if (buff != temp)
-			temp->value = buff->value;
-		if (getColour(buff) != Colour::Red)
+			temp->value = buff->value; // dla przypadkow 3 & 4 przepisujemy wartosc
+		if (getColour(buff) != Colour::Red) // jezeli usuwany wezel jest czerwony to konczymy poniewaz nie zaburzymy warunkow drzewa RBT
 		{
-			while (son != root && getColour(son) == Colour::Black)
+			while (son != root && getColour(son) == Colour::Black) // powtarzamy az do osiagniecia korzenia drzewa badz wezla koloru czerwonego
 			{
-				if (son != son->parent->childRight) 
+				if (son != son->parent->childRight) // syn jest lewym dzieckiem
 				{
 					brother = son->parent->childRight;
-					if (getColour(brother) != Colour::Black)
+					if (getColour(brother) != Colour::Black) // przypadek 1 - brat jest czerwony
 					{
 						setColour(brother, Colour::Black);
 						setColour(son->parent, Colour::Red);
 						rotateLeft(son->parent);
 						brother = son->parent->childRight;
 					}
-					if (getColour(brother->childLeft) != Colour::Red && getColour(brother->childRight) != Colour::Red) 
+					if (getColour(brother->childLeft) != Colour::Red && getColour(brother->childRight) != Colour::Red) // brat wezla posiada 2 czarnych synow
 					{
-						setColour(brother, Colour::Red);
-						son = son->parent;
+						setColour(brother, Colour::Red); // zamiana koloru 
+						son = son->parent; // przechodzimy na wyzszy poziom drzewa
 					}
 					else
 					{
-						if (getColour(brother->childRight) != Colour::Red) 
+						if (getColour(brother->childRight) != Colour::Red)  // jezeli prawe dziecko czarne
 						{
 							setColour(brother->childLeft, Colour::Black);
 							setColour(brother, Colour::Red);
 							rotateRight(brother);
-							brother = son->parent->childRight;
+							brother = son->parent->childRight; // przygotowujemy wezly do rotacji w lewo
 						}
 
 						setColour(brother, getColour(son->parent)); 
 						setColour(son->parent, Colour::Black);
 						setColour(brother->childRight, Colour::Black);
 						rotateLeft(son->parent);		
-						son = root;
+						son = root; // warunek konczacy petle
 					}
 				}
-				else
+				else // przypadki lustrzane
 				{
 					brother = son->parent->childLeft;
 					if (getColour(brother) != Colour::Black)
@@ -157,15 +157,15 @@ void CRedBlackTree::remove(int value)
 						setColour(son->parent, Colour::Black);
 						setColour(brother->childLeft, Colour::Black);
 						rotateRight(son->parent);		
-						son = root;
+						son = root; // zakanczamy petle
 					}
 				}
 
 			}
 		}
-		setColour(son, Colour::Black);
-		delete buff;
-		buff = nullptr;
+		setColour(son, Colour::Black); // syn dostaje kolor czarny
+		delete buff;		// zwalniamy pamiec
+		buff = nullptr;		// przepinamy wskaznik na nullptr ( pozwala uniknac bledow )
 	}
 }
 
@@ -177,9 +177,9 @@ int CRedBlackTree::search(int value) // mozliwe jest zwracanie wskaznika na wysz
 		return -1;
 }
 
-int CRedBlackTree::searchTree(int value, Node* temp) 
+int CRedBlackTree::searchTree(int value, Node* temp)  // rekurencyjne wyszukiwanie w drzewie
 {
-	if (temp->value == value)
+	if (temp->value == value) 
 		return value;
 	else if (temp->value > value && temp->childLeft != &sentinel)
 		return searchTree(value, temp->childLeft);
@@ -193,38 +193,38 @@ void CRedBlackTree::checkRBT(Node* temp)
 	Node* uncle = nullptr;
 	Node* tParent = nullptr;
 	Node* gParent = nullptr;
-	while (temp != root && getColour(temp) == Colour::Red && getColour(temp->parent) == Colour::Red)
+	while (temp != root && getColour(temp) == Colour::Red && getColour(temp->parent) == Colour::Red) // sprawdzenie warunku drzewa RBT
 	{
 		uncle = getUncle(temp);
 		tParent = temp->parent;
 		gParent = tParent->parent;
-		if (tParent == gParent->childLeft)
+		if (tParent == gParent->childLeft) // przypadki "normalne"
 		{
-			if (getColour(uncle) == Colour::Red)
+			if (getColour(uncle) == Colour::Red) // jezeli wujek czerwony to zamieniamy kolory
 			{
 				setColour(uncle, Colour::Black);
 				setColour(tParent, Colour::Black);
 				setColour(gParent, Colour::Red);
 				setColour(root, Colour::Black);
-				temp = gParent;
+				temp = gParent; // przechodzimy poziom wyzej
 			}
-			else
+			else // wujek jest czarny
 			{
-				if (temp == tParent->childRight)
-				{
-					rotateLeft(tParent);
-					temp = tParent;
-					tParent = temp->parent;
+				if (temp == tParent->childRight) // w przypadku 'wezyka' rootujemy w lewo				O					
+				{								 //													   / \   
+					rotateLeft(tParent);		 //													  O   O 
+					temp = tParent;				 //													   \ 
+					tParent = temp->parent;      //														O
 				}
-				rotateRight(gParent);
-				switchColour(tParent);
+				rotateRight(gParent);		 	 // rootujemy w prawo 
+				switchColour(tParent);			 // zmieniamy kolory na przeciwne
 				switchColour(gParent);
-				temp = tParent;
+				temp = tParent;				   	 // sprawdzamy warunek RBT poziom wyzej
 			}
 		}
-		else
+		else // przypadki lustrzane
 		{
-			if (getColour(uncle) == Colour::Red)
+			if (getColour(uncle) == Colour::Red) // -||-
 			{
 				setColour(uncle, Colour::Black);
 				setColour(tParent, Colour::Black);
@@ -251,7 +251,7 @@ void CRedBlackTree::checkRBT(Node* temp)
 
 
 
-void CRedBlackTree::rotateLeft(Node * temp)
+void CRedBlackTree::rotateLeft(Node * temp) // komentarze analogicznie jak dla rotateRight(*)
 {
 	Node* rChild = temp->childRight;
 	Node* tParent;
@@ -286,14 +286,14 @@ void CRedBlackTree::rotateRight(Node * temp)
 	{
 		tParent = temp->parent;
 		temp->childLeft = lChild->childRight;
-		if (temp->childLeft != &sentinel)
+		if (temp->childLeft != &sentinel)	// przepinamy potomka o ile istnieje
 			temp->childLeft->parent = temp;
-		lChild->childRight = temp;
-		lChild->parent = tParent;
+		lChild->childRight = temp;		// rodzic jako prawe dziecko po rotacji
+		lChild->parent = tParent;		// przepinamy rodzica
 		temp->parent = lChild;
 		if (tParent != &sentinel  && tParent != nullptr)
 		{
-			if (temp == tParent->childLeft)
+			if (temp == tParent->childLeft)	// przypisujemy do rodzica nowe dziecko, zaleznie od pozycji pierwotnego wezla
 				tParent->childLeft = lChild;
 			else
 				tParent->childRight = lChild;
@@ -351,7 +351,7 @@ CRedBlackTree::Node* CRedBlackTree::getSuccessor(Node* temp)
 	if (temp != nullptr)
 	{
 		if (temp->childRight != &sentinel)
-			return minNode(temp->childRight);
+			return minNode(temp->childRight); // pobieramy najmniejszy wezel z prawego dziecka
 		else
 		{
 			Node* buff;
